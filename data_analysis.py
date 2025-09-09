@@ -313,19 +313,69 @@ def run_linear_regression(
     return model
 
 
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+def plot_data(
+    data: pd.DataFrame, x: str, y: str = None, plot_type: str = "hist", palette="Set3"
+):
+    """
+    Create a visualization for the dataset.
+
+    Parameters:
+        data (pd.DataFrame): The dataset
+        x (str): Column for the x-axis
+        y (str, optional): Column for the y-axis (if needed)
+        plot_type (str): Type of plot ("hist", "box", "scatter")
+        palette (str): Can input any palette of choice from seaborn
+
+    Returns:
+        None
+    """
+    plt.figure(figsize=(8, 5))
+
+    if plot_type == "hist":
+        sns.histplot(data=data, x=x, bins=20, kde=True, color=palette)
+        plt.title(f"Histogram of {x}")
+        plt.xlabel(x)
+        plt.ylabel("Count")
+
+    elif plot_type == "box" and y is not None:
+        sns.boxplot(data=data, x=x, y=y, palette=palette)
+        plt.title(f"Boxplot of {y} by {x}")
+        plt.xlabel(x)
+        plt.ylabel(y)
+
+    elif plot_type == "scatter" and y is not None:
+        sns.scatterplot(data=data, x=x, y=y, hue=y, palette=palette)
+        plt.title(f"Scatter Plot of {y} vs {x}")
+        plt.xlabel(x)
+        plt.ylabel(y)
+
+    else:
+        raise ValueError("Invalid plot_type or missing y for box/scatter plot")
+
+    plt.show()
+
+
 if __name__ == "__main__":
+    # Import the Dataset
     file_path = "data/heart_disease_UCI_dataset.csv"
     heart_disease = load_dataset(file_path)
 
     if heart_disease.empty:
         print("Dataset is empty. Exiting script...")
     else:
+        # Inspect the Data
+
         heart_disease = clean_dataset(heart_disease)
         heart_disease = remove_outliers(heart_disease)
 
         filters = {"age": (">", 50), "chol": (">=", 240)}
         filtered_data = filter_data(heart_disease, filters)
 
+        # Basic Filtering and Grouping
         # Average cholesterol by sex
         group_and_summarize(
             heart_disease, group_cols=["sex"], agg_dict={"chol": ["mean"]}
@@ -352,6 +402,7 @@ if __name__ == "__main__":
         one_hot_encoded_data = apply_one_hot_encoding(heart_disease, categorical_cols)
         print("One hot encoded data:\n", one_hot_encoded_data.head())
 
+        # Exploring a Machine Learning Algorithm
         # Run with One-Hot Encoding (recommended for categorical data)
         model = run_linear_regression(
             heart_disease,
@@ -366,4 +417,16 @@ if __name__ == "__main__":
             target_col="num",
             categorical_cols=categorical_cols,
             encoding="label",
+        )
+
+        # Data Visualization
+        # Histogram of age
+        plot_data(heart_disease, x="age", plot_type="hist", palette="y")
+
+        # Boxplot of cholesterol by heart disease
+        plot_data(heart_disease, x="num", y="chol", plot_type="box")
+
+        # Scatter plot of age vs cholesterol
+        plot_data(
+            heart_disease, x="age", y="chol", plot_type="scatter", palette="coolwarm"
         )
