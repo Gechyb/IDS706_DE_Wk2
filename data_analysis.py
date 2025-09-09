@@ -256,43 +256,61 @@ def apply_one_hot_encoding(
     return data
 
 
-# def run_linear_regression(data: pd.DataFrame, target_col: str = "num"):
-#     """
-#     Train and evaluate a simple Linear Regression model.
+def run_linear_regression(
+    data: pd.DataFrame,
+    target_col: str = "num",
+    categorical_cols: list = None,
+    encoding: str = "onehot",
+):
+    """
+    Train and evaluate a simple Linear Regression model.
 
-#     Parameters:
-#         data (pd.DataFrame): Dataset including features + target
-#         target_col (str): Column to predict (numeric)
+    Parameters:
+        data (pd.DataFrame): Dataset including features + target
+        target_col (str): Column to predict (numeric)
+        categorical_cols (list): List of categorical columns to encode
+        encoding (str): "label" or "onehot" encoding
 
-#     Returns:
-#         model: Trained Linear Regression model
-#     """
-#     print(f"Running Linear Regression to predict '{target_col}'...")
+    Returns:
+        model: Trained Linear Regression model
+    """
+    print(f"Running Linear Regression to predict '{target_col}'...")
 
-#     # Step 1: Features and target
-#     X = data.drop(columns=[target_col])
-#     y = data[target_col]
+    # Handle categorical variables
+    if categorical_cols:
+        if encoding == "label":
+            data = apply_label_encoding(data, categorical_cols)
+            print("✅ Applied Label Encoding")
+        elif encoding == "onehot":
+            data = apply_one_hot_encoding(data, categorical_cols)
+            print("✅ Applied One-Hot Encoding")
+        else:
+            raise ValueError("encoding must be 'label' or 'onehot'")
 
-#     # Step 2: Train-test split
-#     X_train, X_test, y_train, y_test = train_test_split(
-#         X, y, test_size=0.2, random_state=42
-#     )
+    # Features and target
+    X = data.drop(columns=[target_col])
+    y = data[target_col]
 
-#     # Step 3: Train model
-#     model = LinearRegression()
-#     model.fit(X_train, y_train)
+    # Train-test split
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
-#     # Step 4: Predictions
-#     y_pred = model.predict(X_test)
+    # Train model
+    model = LinearRegression()
+    model.fit(X_train, y_train)
 
-#     # Step 5: Evaluation
-#     mse = mean_squared_error(y_test, y_pred)
-#     r2 = r2_score(y_test, y_pred)
+    # Predictions
+    y_pred = model.predict(X_test)
 
-#     print(f"Mean Squared Error: {mse:.2f}")
-#     print(f"R² Score: {r2:.2f}")
+    # Evaluation
+    mse = mean_squared_error(y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)
 
-#     return model
+    print(f"Mean Squared Error: {mse:.2f}")
+    print(f"R² Score: {r2:.2f}")
+
+    return model
 
 
 if __name__ == "__main__":
@@ -333,3 +351,19 @@ if __name__ == "__main__":
         # One-Hot Encoding
         one_hot_encoded_data = apply_one_hot_encoding(heart_disease, categorical_cols)
         print("One hot encoded data:\n", one_hot_encoded_data.head())
+
+        # Run with One-Hot Encoding (recommended for categorical data)
+        model = run_linear_regression(
+            heart_disease,
+            target_col="num",
+            categorical_cols=categorical_cols,
+            encoding="onehot",
+        )
+
+        # Or run with Label Encoding
+        model = run_linear_regression(
+            heart_disease,
+            target_col="num",
+            categorical_cols=categorical_cols,
+            encoding="label",
+        )
