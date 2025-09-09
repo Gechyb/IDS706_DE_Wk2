@@ -1,38 +1,109 @@
+# Heart Disease Data Analysis & Machine Learning Exploration
 
-## Data Analysis
+**Author:** Ogechukwu Ezenwa  
+**Date:** September 9, 2025  
+**Course:** IDS 706 – Data Engineering Systems  
+**Assignment:** Week 2 Mini-Assignment
 
-This project includes a `data_analysis.py` script that performs data loading, cleaning, and exploratory analysis. The script uses pandas and matplotlib for data manipulation and visualization.
+---
 
-### Features
+## Overview
 
-- Loads data from CSV files
-- Cleans and preprocesses data
-- Generates summary statistics
-- Visualizes data distributions and relationships
+This project analyzes the Heart Disease UCI dataset to identify patterns in diagnostic measurements and explores a simple machine learning model to predict the presence of heart disease.
 
-### Usage
+---
+
+## Steps Performed
+
+### 1. Import & Inspect Data
+- Loaded the dataset from CSV.
+- Displayed the first 5 rows and dataset shape.
+- Checked column data types.
+
+**Observations:**  
+All columns loaded correctly; no missing values in this dataset.
+
+### 2. Clean & Preprocess Data
+- Checked for missing values and duplicates.
+- Dropped duplicate rows.
+- Checked summary statistics and data types for each column.
+
+**Observations:**  
+Dataset is clean with no missing values and few/no duplicates.
+
+### 3. Outlier Detection & Removal
+- Applied z-score method on numeric columns.
+- Removed rows with z-score > 3 as outliers.
+
+**Observations:**  
+Outlier removal helped reduce extreme values in age, chol, trestbps, etc.
+
+### 4. Filtering & Grouping
+- Filtered patients with age > 50 and chol ≥ 240.
+- Grouped data to calculate:
+    - Average cholesterol by sex.
+    - Count of patients by chest pain type.
+    - Summary statistics (mean and max) by sex and chest pain type.
+
+**Observations:**  
+Older patients and those with high cholesterol are more likely to have heart disease indicators.
+
+### 5. Categorical Variable Encoding
+- **Label Encoding:** Converts categorical variables to numeric labels (e.g., sex → 0/1).
+- **One-Hot Encoding:** Creates binary columns for each category (e.g., cp_1, cp_2…).
+- Applied to: sex, cp, fbs, restecg, exang.
+
+**Observations:**  
+Encoding allowed categorical data to be used in machine learning models.
+
+### 6. Machine Learning Exploration
+- Chose Linear Regression to predict the target variable `num` (heart disease presence).
+- Two approaches tested:
+    - Label Encoding for categorical variables.
+    - One-Hot Encoding for categorical variables.
+- Evaluated using Mean Squared Error (MSE) and R² Score.
+
+**Observations:**  
+Linear Regression is not ideal for binary classification, but it illustrates model training, feature selection, and evaluation.
+
+### 7. Data Visualization
+- **Histogram:** Distribution of age.
+- **Boxplot:** Cholesterol levels grouped by heart disease presence (`num`).
+- **Scatter Plot:** Age vs cholesterol.
+
+**Observations:**
+- Most patients are between 40–65 years old.
+- Higher cholesterol is generally associated with patients diagnosed with heart disease.
+- Scatter plot shows some correlation between age and cholesterol but with variance.
+
+---
+
+## How to Run
 
 ```bash
 python data_analysis.py
 ```
 
-Make sure to install the required dependencies:
+The script will:
+- Load the dataset.
+- Clean and preprocess data.
+- Remove outliers.
+- Filter and group data.
+- Encode categorical variables.
+- Run linear regression models.
+- Display visualizations.
 
-```bash
-pip install pandas matplotlib
-```
+---
 
-### Output
+## Findings & Insights
 
-- Cleaned data files
-- Plots and summary statistics saved to the output directory
+- Older patients with higher cholesterol may have a higher likelihood of heart disease.
+- Categorical features like sex and chest pain type show differences in heart disease prevalence.
+- Linear Regression can predict numeric outcomes, but classification models would be more suitable for predicting heart disease (0/1).
 
-### Requirements
+---
 
-- Python 3.7+
-- pandas
-- matplotlib
+## Notes
 
-### Author
-
-Ogechukwu Ezenwa
+- **Dataset source:** Kaggle – Heart Disease UCI
+- **Packages required:** `pandas`, `numpy`, `scipy`, `matplotlib`, `seaborn`, `scikit-learn`
