@@ -9,7 +9,43 @@
 
 ## Overview
 
-This project analyzes the Heart Disease UCI dataset to identify patterns in diagnostic measurements and explores a simple machine learning model to predict the presence of heart disease.
+This project analyzes the Heart Disease dataset to identify patterns in diagnostic measurements and explores a simple machine learning model to predict the presence of heart disease.
+
+---
+
+
+## Installation & Setup
+
+
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/Gechyb/IDS706_DE_Wk1.git
+```
+ 
+
+2. Using `requirements.txt` - Install the required Python packages:
+
+```bash
+make install
+```
+
+2. Fun the analysis
+```bash
+make all
+```
+
+## Project Structure
+
+- **data_analysis.ipynb**  
+  Jupyter Notebook used for **initial data exploration and visualization**.  
+  This includes checking for missing values, duplicates, summary statistics, and plotting feature distributions.  
+  The purpose of this notebook was to explore the dataset interactively before refactoring the steps into reusable functions in `data_analysis.py`.
+
+- **data_analysis.py**  
+  Python script containing modular functions for loading, cleaning, analyzing, and modeling the dataset.  
+  This script represents the finalized workflow after insights from the notebook exploration.
 
 ---
 
@@ -78,10 +114,10 @@ Linear Regression is not ideal for binary classification, but it illustrates mod
 
 ---
 
-## How to Run
+## How to run data_analysis.py
 
 ```bash
-python data_analysis.py
+make run
 ```
 
 The script will:
