@@ -4,16 +4,17 @@ Data: September 9, 2025
 Course: IDS 706 - Data Engineering Systems
 Assignment: Week 2 Mini-Assignment - Data Analysis and Exploring Machine Learning Algorithms
 
-Question:
-Purpose: This script analyzes heart disease dataset to identify the factors that results in heart disease
+Purpose: This script analyzes heart disease dataset and identify whether a patient is likely to have heart disease based on diagnostic measurements.
 Dataset source: https://www.kaggle.com/datasets/navjotkaushal/heart-disease-uci-dataset
 Usage:
     python data_analysis.py
+
 """
 
 import pandas as pd
 import numpy as np
 from scipy.stats import zscore
+import operator
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -132,6 +133,44 @@ def remove_outliers(
     return data
 
 
+def filter_data(data: pd.DataFrame, conditions: dict) -> pd.DataFrame:
+    """
+    Filter rows based on multiple conditions with flexible operators.
+
+    Parameters:
+        data (pd.DataFrame): Input DataFrame
+        conditions (dict): Dictionary where keys are column names and values are tuples of (operator, value).
+                           Supported operators: '>', '<', '>=', '<=', '==', '!='
+                           Example: {'age': ('>', 50), 'chol': ('>=', 240)}
+
+    Returns:
+        pd.DataFrame: Filtered DataFrame
+    """
+    ops = {
+        ">": operator.gt,
+        "<": operator.lt,
+        ">=": operator.ge,
+        "<=": operator.le,
+        "==": operator.eq,
+        "!=": operator.ne,
+    }
+
+    filtered = data.copy()
+    for col, (op_str, value) in conditions.items():
+        if col in filtered.columns:
+            if op_str in ops:
+                filtered = filtered[ops[op_str](filtered[col], value)]
+            else:
+                print(f"Operator '{op_str}' not supported. Skipping filter on '{col}'.")
+        else:
+            print(f"Column '{col}' not found in DataFrame. Skipping filter.")
+
+    print(f"Filtered data based on conditions: {conditions}")
+    print(filtered.head())
+    print(filtered.shape)
+    return filtered
+
+
 if __name__ == "__main__":
     file_path = "data/heart_disease_UCI_dataset.csv"
     heart_disease = load_dataset(file_path)
@@ -141,3 +180,6 @@ if __name__ == "__main__":
     else:
         heart_disease = clean_dataset(heart_disease)
         heart_disease = remove_outliers(heart_disease)
+
+        filters = {"age": (">", 50), "chol": (">=", 240)}
+        filtered_data = filter_data(heart_disease, filters)
