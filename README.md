@@ -104,11 +104,19 @@ Linear Regression is not ideal for binary classification, but it illustrates mod
 
 ### 7. Data Visualization
 - **Histogram:** Distribution of age.
+![alt text](histo_plot.png)
+
 - **Boxplot:** Cholesterol levels grouped by heart disease presence (`num`).
+![alt text](Boxplot.png)
+
 - **Scatter Plot:** Age vs cholesterol.
+![alt text](scatter_plot.png)
+
+
+
 
 **Observations:**
-- Most patients are between 40–65 years old.
+- Most patients are between 50–65 years old.
 - Higher cholesterol is generally associated with patients diagnosed with heart disease.
 - Scatter plot shows some correlation between age and cholesterol but with variance.
 
