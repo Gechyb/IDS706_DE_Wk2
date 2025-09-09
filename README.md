@@ -105,5 +105,5 @@ The script will:
 
 ## Notes
 
-- **Dataset source:** Kaggle – Heart Disease UCI
+- **Dataset source:** [Kaggle – Heart Disease UCI](https://www.kaggle.com/datasets/navjotkaushal/heart-disease-uci-dataset)
 - **Packages required:** `pandas`, `numpy`, `scipy`, `matplotlib`, `seaborn`, `scikit-learn`
