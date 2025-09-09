@@ -6,17 +6,29 @@ Assignment: Week 2 Mini-Assignment - Data Analysis and Exploring Machine Learnin
 
 Purpose: This script analyzes heart disease dataset and identify whether a patient is likely to have heart disease based on diagnostic measurements.
 Dataset source: https://www.kaggle.com/datasets/navjotkaushal/heart-disease-uci-dataset
+
 Usage:
     python data_analysis.py
 
 """
 
+# Primary packages
 import pandas as pd
 import numpy as np
 from scipy.stats import zscore
 import operator
+
+# Encoding Categorical variables
+from sklearn.preprocessing import LabelEncoder
+
+# Visualization packages
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+# Machine learning model development packages
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
 
 
 def load_dataset(file_path: str) -> pd.DataFrame:
@@ -155,7 +167,7 @@ def filter_data(data: pd.DataFrame, conditions: dict) -> pd.DataFrame:
         "!=": operator.ne,
     }
 
-    filtered = data.copy()
+    filtered = data.copy()  # to avoid modifying original dataset
     for col, (op_str, value) in conditions.items():
         if col in filtered.columns:
             if op_str in ops:
@@ -171,6 +183,118 @@ def filter_data(data: pd.DataFrame, conditions: dict) -> pd.DataFrame:
     return filtered
 
 
+def group_and_summarize(data: pd.DataFrame, group_cols: list, agg_dict: dict):
+    """
+    Perform flexible groupby operations and summarize data.
+
+    Parameters:
+        data (pd.DataFrame): Input DataFrame
+        group_cols (list): List of column names to group by
+        agg_dict (dict): Dictionary of {column: [aggregations]} to apply.
+                         Example: {"chol": ["mean"], "age": ["mean", "max"]}
+
+    Returns:
+        pd.DataFrame: Grouped summary DataFrame
+    """
+    if not all(col in data.columns for col in group_cols):
+        missing = [col for col in group_cols if col not in data.columns]
+        print(f"Missing group columns: {missing}. Skipping them.")
+
+    if not all(col in data.columns for col in agg_dict.keys()):
+        missing = [col for col in agg_dict.keys() if col not in data.columns]
+        print(f"Missing aggregation columns: {missing}. Skipping them.")
+
+    grouped = data.groupby([col for col in group_cols if col in data.columns]).agg(
+        {col: funcs for col, funcs in agg_dict.items() if col in data.columns}
+    )
+
+    print(f"Grouped by {group_cols} with aggregations {agg_dict}:")
+    print(grouped.head())
+    return grouped
+
+
+def apply_label_encoding(data: pd.DataFrame, categorical_cols: list) -> pd.DataFrame:
+    """
+    Apply Label Encoding to categorical columns (good for binary or ordinal categories).
+
+    Parameters:
+        data (pd.DataFrame): The dataset
+        categorical_cols (list): List of column names to encode
+
+    Returns:
+        pd.DataFrame: Dataset with encoded categorical columns
+    """
+    data = data.copy()
+    le = LabelEncoder()
+
+    for col in categorical_cols:
+        if col in data.columns:
+            data[col] = le.fit_transform(
+                data[col].astype(str)
+            )  # convert to string to be safe
+
+    return data
+
+
+def apply_one_hot_encoding(
+    data: pd.DataFrame, categorical_cols: list, drop_first: bool = True
+) -> pd.DataFrame:
+    """
+    Apply One-Hot Encoding to categorical columns (good for nominal categories).
+
+    Parameters:
+        data (pd.DataFrame): The dataset
+        categorical_cols (list): List of column names to encode
+        drop_first (bool): Whether to drop the first category to avoid multicollinearity
+
+    Returns:
+        pd.DataFrame: Dataset with one-hot encoded columns
+    """
+    data = data.copy()
+    data = pd.get_dummies(data, columns=categorical_cols, drop_first=drop_first)
+
+    return data
+
+
+# def run_linear_regression(data: pd.DataFrame, target_col: str = "num"):
+#     """
+#     Train and evaluate a simple Linear Regression model.
+
+#     Parameters:
+#         data (pd.DataFrame): Dataset including features + target
+#         target_col (str): Column to predict (numeric)
+
+#     Returns:
+#         model: Trained Linear Regression model
+#     """
+#     print(f"Running Linear Regression to predict '{target_col}'...")
+
+#     # Step 1: Features and target
+#     X = data.drop(columns=[target_col])
+#     y = data[target_col]
+
+#     # Step 2: Train-test split
+#     X_train, X_test, y_train, y_test = train_test_split(
+#         X, y, test_size=0.2, random_state=42
+#     )
+
+#     # Step 3: Train model
+#     model = LinearRegression()
+#     model.fit(X_train, y_train)
+
+#     # Step 4: Predictions
+#     y_pred = model.predict(X_test)
+
+#     # Step 5: Evaluation
+#     mse = mean_squared_error(y_test, y_pred)
+#     r2 = r2_score(y_test, y_pred)
+
+#     print(f"Mean Squared Error: {mse:.2f}")
+#     print(f"R² Score: {r2:.2f}")
+
+#     return model
+
+
 if __name__ == "__main__":
     file_path = "data/heart_disease_UCI_dataset.csv"
     heart_disease = load_dataset(file_path)
@@ -183,3 +307,29 @@ if __name__ == "__main__":
 
         filters = {"age": (">", 50), "chol": (">=", 240)}
         filtered_data = filter_data(heart_disease, filters)
+
+        # Average cholesterol by sex
+        group_and_summarize(
+            heart_disease, group_cols=["sex"], agg_dict={"chol": ["mean"]}
+        )
+
+        # Count of patients by chest pain type
+        group_and_summarize(
+            heart_disease, group_cols=["cp"], agg_dict={"num": ["count"]}
+        )
+
+        # Multiple aggregations
+        group_and_summarize(
+            heart_disease,
+            group_cols=["sex", "cp"],
+            agg_dict={"age": ["mean", "max"], "chol": ["mean", "max"]},
+        )
+
+        categorical_cols = ["sex", "cp", "fbs", "restecg", "exang"]
+        # Label Encoding
+        label_encoded_data = apply_label_encoding(heart_disease, categorical_cols)
+        print("Label encoding:\n", label_encoded_data.head())
+
+        # One-Hot Encoding
+        one_hot_encoded_data = apply_one_hot_encoding(heart_disease, categorical_cols)
+        print("One hot encoded data:\n", one_hot_encoded_data.head())

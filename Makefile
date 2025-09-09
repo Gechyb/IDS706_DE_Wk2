@@ -14,6 +14,7 @@ lint:
 # Run the data_analysis.py
 run:
 	python data_analysis.py
+	
 # Clean up Python cache files
 clean:
 	rm -rf __pycache__ .pytest_cache .coverage
