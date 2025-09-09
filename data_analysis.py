@@ -280,10 +280,10 @@ def run_linear_regression(
     if categorical_cols:
         if encoding == "label":
             data = apply_label_encoding(data, categorical_cols)
-            print("✅ Applied Label Encoding")
+            print("Applied Label Encoding")
         elif encoding == "onehot":
             data = apply_one_hot_encoding(data, categorical_cols)
-            print("✅ Applied One-Hot Encoding")
+            print("Applied One-Hot Encoding")
         else:
             raise ValueError("encoding must be 'label' or 'onehot'")
 
@@ -311,10 +311,6 @@ def run_linear_regression(
     print(f"R² Score: {r2:.2f}")
 
     return model
-
-
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 
 def plot_data(
