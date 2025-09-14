@@ -1,6 +1,6 @@
 """
 Author: Ogechukwu Ezenwa
-Data: September 9, 2025
+Date: September 9, 2025
 Course: IDS 706 - Data Engineering Systems
 Assignment: Week 2 Mini-Assignment - Data Analysis and Exploring Machine Learning Algorithms
 
@@ -8,6 +8,7 @@ Purpose: This script analyzes heart disease dataset and identify whether a patie
 Dataset source: https://www.kaggle.com/datasets/navjotkaushal/heart-disease-uci-dataset
 
 Usage:
+    make run
     python data_analysis.py
 
 """
@@ -173,7 +174,8 @@ def filter_data(data: pd.DataFrame, conditions: dict) -> pd.DataFrame:
             if op_str in ops:
                 filtered = filtered[ops[op_str](filtered[col], value)]
             else:
-                print(f"Operator '{op_str}' not supported. Skipping filter on '{col}'.")
+                print(
+                    f"Operator '{op_str}' not supported. Skipping filter on '{col}'.")
         else:
             print(f"Column '{col}' not found in DataFrame. Skipping filter.")
 
@@ -251,7 +253,8 @@ def apply_one_hot_encoding(
         pd.DataFrame: Dataset with one-hot encoded columns
     """
     data = data.copy()
-    data = pd.get_dummies(data, columns=categorical_cols, drop_first=drop_first)
+    data = pd.get_dummies(data, columns=categorical_cols,
+                          drop_first=drop_first)
 
     return data
 
@@ -355,74 +358,74 @@ def plot_data(
     plt.show()
 
 
-if __name__ == "__main__":
-    # Import the Dataset
-    file_path = "data/heart_disease_UCI_dataset.csv"
-    heart_disease = load_dataset(file_path)
+# if __name__ == "__main__":
+#     # Import the Dataset
+#     file_path = "data/heart_disease_UCI_dataset.csv"
+#     heart_disease = load_dataset(file_path)
 
-    if heart_disease.empty:
-        print("Dataset is empty. Exiting script...")
-    else:
-        # Inspect the Data
+#     if heart_disease.empty:
+#         print("Dataset is empty. Exiting script...")
+#     else:
+#         # Inspect the Data
 
-        heart_disease = clean_dataset(heart_disease)
-        heart_disease = remove_outliers(heart_disease)
+#         heart_disease = clean_dataset(heart_disease)
+#         heart_disease = remove_outliers(heart_disease)
 
-        filters = {"age": (">", 50), "chol": (">=", 240)}
-        filtered_data = filter_data(heart_disease, filters)
+#         filters = {"age": (">", 50), "chol": (">=", 240)}
+#         filtered_data = filter_data(heart_disease, filters)
 
-        # Basic Filtering and Grouping
-        # Average cholesterol by sex
-        group_and_summarize(
-            heart_disease, group_cols=["sex"], agg_dict={"chol": ["mean"]}
-        )
+#         # Basic Filtering and Grouping
+#         # Average cholesterol by sex
+#         group_and_summarize(
+#             heart_disease, group_cols=["sex"], agg_dict={"chol": ["mean"]}
+#         )
 
-        # Count of patients by chest pain type
-        group_and_summarize(
-            heart_disease, group_cols=["cp"], agg_dict={"num": ["count"]}
-        )
+#         # Count of patients by chest pain type
+#         group_and_summarize(
+#             heart_disease, group_cols=["cp"], agg_dict={"num": ["count"]}
+#         )
 
-        # Multiple aggregations
-        group_and_summarize(
-            heart_disease,
-            group_cols=["sex", "cp"],
-            agg_dict={"age": ["mean", "max"], "chol": ["mean", "max"]},
-        )
+#         # Multiple aggregations
+#         group_and_summarize(
+#             heart_disease,
+#             group_cols=["sex", "cp"],
+#             agg_dict={"age": ["mean", "max"], "chol": ["mean", "max"]},
+#         )
 
-        categorical_cols = ["sex", "cp", "fbs", "restecg", "exang"]
-        # Label Encoding
-        label_encoded_data = apply_label_encoding(heart_disease, categorical_cols)
-        print("Label encoding:\n", label_encoded_data.head())
+#         categorical_cols = ["sex", "cp", "fbs", "restecg", "exang"]
+#         # Label Encoding
+#         label_encoded_data = apply_label_encoding(heart_disease, categorical_cols)
+#         print("Label encoding:\n", label_encoded_data.head())
 
-        # One-Hot Encoding
-        one_hot_encoded_data = apply_one_hot_encoding(heart_disease, categorical_cols)
-        print("One hot encoded data:\n", one_hot_encoded_data.head())
+#         # One-Hot Encoding
+#         one_hot_encoded_data = apply_one_hot_encoding(heart_disease, categorical_cols)
+#         print("One hot encoded data:\n", one_hot_encoded_data.head())
 
-        # Exploring a Machine Learning Algorithm
-        # Run with One-Hot Encoding (recommended for categorical data)
-        model = run_linear_regression(
-            heart_disease,
-            target_col="num",
-            categorical_cols=categorical_cols,
-            encoding="onehot",
-        )
+#         # Exploring a Machine Learning Algorithm
+#         # Run with One-Hot Encoding (recommended for categorical data)
+#         model = run_linear_regression(
+#             heart_disease,
+#             target_col="num",
+#             categorical_cols=categorical_cols,
+#             encoding="onehot",
+#         )
 
-        # Or run with Label Encoding
-        model = run_linear_regression(
-            heart_disease,
-            target_col="num",
-            categorical_cols=categorical_cols,
-            encoding="label",
-        )
+#         # Or run with Label Encoding
+#         model = run_linear_regression(
+#             heart_disease,
+#             target_col="num",
+#             categorical_cols=categorical_cols,
+#             encoding="label",
+#         )
 
-        # Data Visualization
-        # Histogram of age
-        plot_data(heart_disease, x="age", plot_type="hist", palette="y")
+#         # Data Visualization
+#         # Histogram of age
+#         plot_data(heart_disease, x="age", plot_type="hist", palette="y")
 
-        # Boxplot of cholesterol by heart disease
-        plot_data(heart_disease, x="num", y="chol", plot_type="box")
+#         # Boxplot of cholesterol by heart disease
+#         plot_data(heart_disease, x="num", y="chol", plot_type="box")
 
-        # Scatter plot of age vs cholesterol
-        plot_data(
-            heart_disease, x="age", y="chol", plot_type="scatter", palette="coolwarm"
-        )
+#         # Scatter plot of age vs cholesterol
+#         plot_data(
+#             heart_disease, x="age", y="chol", plot_type="scatter", palette="coolwarm"
+#         )

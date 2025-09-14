@@ -14,7 +14,11 @@ lint:
 # Run the data_analysis.py
 run:
 	python data_analysis.py
-	
+
+# Test data_analysis.py
+test:
+	python -m pytest -vv --cov=data_analysis test_data_analysis.py
+
 # Clean up Python cache files
 clean:
 	rm -rf __pycache__ .pytest_cache .coverage
