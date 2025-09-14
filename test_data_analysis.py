@@ -25,8 +25,6 @@ from data_analysis import (
 )
 import unittest
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -199,11 +197,11 @@ class TestDataAnalysisSystem(unittest.TestCase):
 
         # Dataset with identical values
         identical_df = pd.DataFrame({
-            "age": [50]*4,
-            "sex": ["M"]*4,
-            "cp": [1]*4,
-            "chol": [200]*4,
-            "num": [0]*4
+            "age": [50] * 4,
+            "sex": ["M"] * 4,
+            "cp": [1] * 4,
+            "chol": [200] * 4,
+            "num": [0] * 4
         })
         no_outliers = remove_outliers(identical_df, threshold=3)
         self.assertEqual(no_outliers.shape[0], 4)  # nothing removed
