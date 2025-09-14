@@ -38,15 +38,18 @@ make all
 ## Project Structure
 
 - **data_analysis.ipynb**  
+
   Jupyter Notebook used for **initial data exploration and visualization**.  
   This includes checking for missing values, duplicates, summary statistics, and plotting feature distributions.  
   The purpose of this notebook was to explore the dataset interactively before refactoring the steps into reusable functions in `data_analysis.py`.
 
 - **data_analysis.py**  
+
   Python script containing modular functions for loading, cleaning, analyzing, and modeling the dataset.  
   This script represents the finalized workflow after insights from the notebook exploration.
 
 - **Makefile**  
+
   The Makefile automates common tasks for this project, such as installing dependencies, running analysis scripts, and executing tests.  
   - `make install`: Installs all required Python packages listed in `requirements.txt`.
   - `make all`: Runs the full data analysis workflow, including data cleaning, modeling, and visualization.
@@ -57,9 +60,7 @@ make all
 - **images**
 
   This folder contains all project-related images, such as:
-
   - Visualizations and plots generated from the analysis.
-
   - Figures used in reports, documentation, or presentations.
 
 - **data**
@@ -67,6 +68,7 @@ make all
   This folder stores datasets (Heart Disease UCI dataset) and related files used in the project.
 
 - **.devcontainer**
+
     *Development Container Setup*
 
     To streamline development and ensure a consistent environment, this project includes a [devcontainer](https://containers.dev/) configuration. This allows you to use Visual Studio Code's Remote - Containers extension for reproducible builds and easy onboarding.
@@ -95,18 +97,17 @@ make all
     For more details, see the [Dev Containers documentation](https://containers.dev/).
 
 - **Dockerfile**
+
     #### Docker Setup
 
     This project includes a `Dockerfile` for containerized execution. To build and run the Docker container:
 
     1. Build the Docker Image
-
     ```bash
     docker build -t heart-disease-analysis .
     ```
 
     #### 2. Run the Container
-
     ```bash
     docker run --rm -it -v $(pwd):/app heart-disease-analysis
     ```
@@ -114,24 +115,21 @@ make all
     This mounts your project directory into the container, allowing access to data and scripts.
 
     #### 3. Run Analysis Inside the Container
-
     Once inside, you can execute:
 
     ```bash
     make all
     ```
-
     or
 
     ```bash
     python data_analysis.py
     ```
-
     **Note:** Ensure your `requirements.txt` is up to date for all dependencies.
-
     For troubleshooting or customization, edit the `Dockerfile` as needed.
 
 - **requirment.txt**
+
     Lists all Python dependencies needed for the project.
 
     - Used by pip install -r requirements.txt to install packages.
@@ -139,6 +137,7 @@ make all
     - Ensures reproducible environment across machines or Docker containers.
 
 - **test_data_analysis.py**
+
   Contains unit and system tests for the data_analysis.py module.
 
     - Validates functions like data cleaning, outlier removal, encoding, and plotting.
