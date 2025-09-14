@@ -6,6 +6,7 @@
 **Assignment:** Week 2 Mini-Assignment
 
 ---
+[![Data Analysis of Heart Disease Dataset](https://github.com/Gechyb/IDS706_DE_Wk2/actions/workflows/main.yml/badge.svg)](https://github.com/Gechyb/IDS706_DE_Wk2/actions/workflows/main.yml)
 
 ## Overview
 
@@ -15,8 +16,6 @@ This project analyzes the Heart Disease dataset to identify patterns in diagnost
 
 
 ## Installation & Setup
-
-
 
 1. Clone the repository:
 
@@ -46,6 +45,82 @@ make all
 - **data_analysis.py**  
   Python script containing modular functions for loading, cleaning, analyzing, and modeling the dataset.  
   This script represents the finalized workflow after insights from the notebook exploration.
+
+- **Makefile**  
+  The Makefile automates common tasks for this project, such as installing dependencies, running analysis scripts, and executing tests.  
+  - `make install`: Installs all required Python packages listed in `requirements.txt`.
+  - `make all`: Runs the full data analysis workflow, including data cleaning, modeling, and visualization.
+  - `make run`: Executes the main analysis script (`data_analysis.py`).
+  - `make test`: Runs unit tests to verify code correctness (e.g., `test_data_analysis.py`).  
+  Using the Makefile ensures a consistent and reproducible workflow, making it easy to set up and run the project with simple commands.
+
+- **images**
+
+  This folder contains all project-related images, such as:
+
+  - Visualizations and plots generated from the analysis.
+
+  - Figures used in reports, documentation, or presentations.
+
+- **data**
+
+  This folder stores datasets (Heart Disease UCI dataset) and related files used in the project.
+
+- **.devcontainer**
+  *Development Container Setup*
+
+  To streamline development and ensure a consistent environment, this project includes a [devcontainer](https://containers.dev/) configuration. This allows you to use Visual Studio Code's Remote - Containers extension for reproducible builds and easy onboarding.
+
+  #### Steps to Build and Use the Devcontainer
+
+1. **Install Prerequisites:**
+  - [Docker](https://docs.docker.com/get-docker/)
+  - [Visual Studio Code](https://code.visualstudio.com/)
+  - [Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+
+2. **Open the Project in VS Code:**
+  - Launch VS Code.
+  - Open the project folder.
+
+3. **Reopen in Container:**
+  - Press `Cmd + Shift + P` and select `Dev Containers: Reopen in Container`.
+  - VS Code will build the container using the `.devcontainer` configuration and install dependencies.
+
+4. **Start Coding:**
+  - The container provides all required tools and libraries.
+  - Run analysis, tests, and scripts as usual.
+
+  **Note:** Any changes to dependencies should be reflected in both `requirements.txt` and the devcontainer configuration.
+
+  For more details, see the [Dev Containers documentation](https://containers.dev/).
+
+  - **Dockerfile**
+  Contains instructions to build a Docker image for this project.
+
+    - Sets up the environment with Python and system dependencies.
+
+    - Installs required Python packages.
+
+    - Defines the working directory and default commands for running the project.
+
+  - **requirment.txt**
+    Lists all Python dependencies needed for the project.
+
+    - Used by pip install -r requirements.txt to install packages.
+
+    - Ensures reproducible environment across machines or Docker containers.
+
+  - **test_data_analysis.py**
+  Contains unit and system tests for the data_analysis.py module.
+
+    - Validates functions like data cleaning, outlier removal, encoding, and plotting.
+
+    -  Can be run using:
+    ```
+    python -m pytest -vv --disable-warnings --cov=data_analysis test_data_analysis.py
+    ```
+
+    - Helps ensure the pipeline works as expected and handles edge cases.
 
 ---
 
