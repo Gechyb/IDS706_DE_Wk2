@@ -9,7 +9,7 @@ format:
 
 # Run linter (flake8 for Python files)
 lint:
-	flake8 --ignore=C,N data_analysis.py
+	flake8 --ignore=C,N *.py
 
 # Run the data_analysis.py
 run:
