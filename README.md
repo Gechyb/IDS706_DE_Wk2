@@ -67,50 +67,78 @@ make all
   This folder stores datasets (Heart Disease UCI dataset) and related files used in the project.
 
 - **.devcontainer**
-  *Development Container Setup*
+    *Development Container Setup*
 
-  To streamline development and ensure a consistent environment, this project includes a [devcontainer](https://containers.dev/) configuration. This allows you to use Visual Studio Code's Remote - Containers extension for reproducible builds and easy onboarding.
+    To streamline development and ensure a consistent environment, this project includes a [devcontainer](https://containers.dev/) configuration. This allows you to use Visual Studio Code's Remote - Containers extension for reproducible builds and easy onboarding.
 
-  #### Steps to Build and Use the Devcontainer
+    #### Steps to Build and Use the Devcontainer
 
-1. **Install Prerequisites:**
-  - [Docker](https://docs.docker.com/get-docker/)
-  - [Visual Studio Code](https://code.visualstudio.com/)
-  - [Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+    1. **Install Prerequisites:**
+    - [Docker](https://docs.docker.com/get-docker/)
+    - [Visual Studio Code](https://code.visualstudio.com/)
+    - [Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
-2. **Open the Project in VS Code:**
-  - Launch VS Code.
-  - Open the project folder.
+    2. **Open the Project in VS Code:**
+    - Launch VS Code.
+    - Open the project folder.
 
-3. **Reopen in Container:**
-  - Press `Cmd + Shift + P` and select `Dev Containers: Reopen in Container`.
-  - VS Code will build the container using the `.devcontainer` configuration and install dependencies.
+    3. **Reopen in Container:**
+    - Press `Cmd + Shift + P` and select `Dev Containers: Reopen in Container`.
+    - VS Code will build the container using the `.devcontainer` configuration and install dependencies.
 
-4. **Start Coding:**
-  - The container provides all required tools and libraries.
-  - Run analysis, tests, and scripts as usual.
+    4. **Start Coding:**
+    - The container provides all required tools and libraries.
+    - Run analysis, tests, and scripts as usual.
 
-  **Note:** Any changes to dependencies should be reflected in both `requirements.txt` and the devcontainer configuration.
+    **Note:** Any changes to dependencies should be reflected in both `requirements.txt` and the devcontainer configuration.
 
-  For more details, see the [Dev Containers documentation](https://containers.dev/).
+    For more details, see the [Dev Containers documentation](https://containers.dev/).
 
-  - **Dockerfile**
-  Contains instructions to build a Docker image for this project.
+- **Dockerfile**
+    #### Docker Setup
 
-    - Sets up the environment with Python and system dependencies.
+    This project includes a `Dockerfile` for containerized execution. To build and run the Docker container:
 
-    - Installs required Python packages.
+    1. Build the Docker Image
 
-    - Defines the working directory and default commands for running the project.
+    ```bash
+    docker build -t heart-disease-analysis .
+    ```
 
-  - **requirment.txt**
+    #### 2. Run the Container
+
+    ```bash
+    docker run --rm -it -v $(pwd):/app heart-disease-analysis
+    ```
+
+    This mounts your project directory into the container, allowing access to data and scripts.
+
+    #### 3. Run Analysis Inside the Container
+
+    Once inside, you can execute:
+
+    ```bash
+    make all
+    ```
+
+    or
+
+    ```bash
+    python data_analysis.py
+    ```
+
+    **Note:** Ensure your `requirements.txt` is up to date for all dependencies.
+
+    For troubleshooting or customization, edit the `Dockerfile` as needed.
+
+- **requirment.txt**
     Lists all Python dependencies needed for the project.
 
     - Used by pip install -r requirements.txt to install packages.
 
     - Ensures reproducible environment across machines or Docker containers.
 
-  - **test_data_analysis.py**
+- **test_data_analysis.py**
   Contains unit and system tests for the data_analysis.py module.
 
     - Validates functions like data cleaning, outlier removal, encoding, and plotting.
