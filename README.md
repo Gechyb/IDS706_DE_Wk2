@@ -102,19 +102,19 @@ make all
 
     This project includes a `Dockerfile` for containerized execution. To build and run the Docker container:
 
-    1. Build the Docker Image
+    1. **Build the Docker Image**
     ```bash
     docker build -t heart-disease-analysis .
     ```
 
-    #### 2. Run the Container
+     2. **Run the Container**
     ```bash
     docker run --rm -it -v $(pwd):/app heart-disease-analysis
     ```
 
     This mounts your project directory into the container, allowing access to data and scripts.
 
-    #### 3. Run Analysis Inside the Container
+    3. **Run Analysis Inside the Container**
     Once inside, you can execute:
 
     ```bash
