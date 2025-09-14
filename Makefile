@@ -17,7 +17,8 @@ run:
 
 # Test data_analysis.py
 test:
-	python -m pytest -vv --cov=data_analysis test_data_analysis.py
+	python -m pytest -vv --disable-warnings --cov=data_analysis test_data_analysis.py
+
 
 # Clean up Python cache files
 clean:

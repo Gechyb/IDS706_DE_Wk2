@@ -44,6 +44,11 @@ def load_dataset(file_path: str) -> pd.DataFrame:
     """
     try:
         data = pd.read_csv(file_path)
+
+        if data.empty:
+            print("Warning: Loaded DataFrame is empty.")
+            return data
+
         print("Dataset loaded successfully!")
         print("First 5 rows:\n", data.head())
         print(
@@ -73,6 +78,10 @@ def clean_dataset(data: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Cleaned dataset
     """
+    if data.empty:
+        print("DataFrame is empty. Skipping cleaning.")
+        return data
+
     print("Data Cleaning & Preprocessing...")
 
     # Check missing values
@@ -341,7 +350,7 @@ def plot_data(
         plt.ylabel("Count")
 
     elif plot_type == "box" and y is not None:
-        sns.boxplot(data=data, x=x, y=y, palette=palette)
+        sns.boxplot(data=data, x=x, y=y, hue=x, palette=palette, legend=False)
         plt.title(f"Boxplot of {y} by {x}")
         plt.xlabel(x)
         plt.ylabel(y)
@@ -394,11 +403,13 @@ def plot_data(
 
 #         categorical_cols = ["sex", "cp", "fbs", "restecg", "exang"]
 #         # Label Encoding
-#         label_encoded_data = apply_label_encoding(heart_disease, categorical_cols)
+#         label_encoded_data = apply_label_encoding(
+#             heart_disease, categorical_cols)
 #         print("Label encoding:\n", label_encoded_data.head())
 
 #         # One-Hot Encoding
-#         one_hot_encoded_data = apply_one_hot_encoding(heart_disease, categorical_cols)
+#         one_hot_encoded_data = apply_one_hot_encoding(
+#             heart_disease, categorical_cols)
 #         print("One hot encoded data:\n", one_hot_encoded_data.head())
 
 #         # Exploring a Machine Learning Algorithm
