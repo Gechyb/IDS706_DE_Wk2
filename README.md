@@ -6,7 +6,7 @@
 **Assignment:** Week 2 Mini-Assignment
 
 ---
-[![Data Analysis of Heart Disease Dataset](https://github.com/Gechyb/IDS706_DE_Wk2/actions/workflows/main.yml/badge.svg)](https://github.com/Gechyb/IDS706_DE_Wk2/actions/workflows/main.yml)
+[![Data Analysis of Heart Disease Dataset](https://github.com/Gechyb/IDS706_DE_Wk2/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/Gechyb/IDS706_DE_Wk2/actions/workflows/main.yml)
 
 ## Overview
 
