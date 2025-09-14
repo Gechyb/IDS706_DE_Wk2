@@ -151,6 +151,45 @@ make all
 
 ---
 
+## Testing 
+This script tests the data analysis functions to ensure the project is reproducible and results are verifiable. It validates the correctness of data cleaning, outlier removal, filtering, encoding, grouping, and plotting functions, as well as machine learning steps like linear regression.
+
+Usage
+You can run the tests using make or pytest:
+
+```
+make test
+
+```
+or 
+```
+python -m pytest -vv --cov=data_analysis test_data_analysis.py
+
+```
+### Features Tested
+
+- Data Loading: Ensures datasets load correctly and columns exist.
+
+- Data Cleaning: Removes duplicates and handles missing values.
+
+- Outlier Removal: Confirms rows beyond thresholds are removed.
+
+- Filtering: Applies conditional filters correctly.
+
+- Grouping & Summarizing: Aggregates and summarizes data accurately.
+
+- Encoding: Tests both label encoding and one-hot encoding of categorical columns.
+
+- Machine Learning: Linear regression runs without errors.
+
+- Plotting: Basic smoke tests for histogram, boxplot, and scatter plot.
+
+- Edge Cases: Handles empty datasets, single-row datasets, missing columns, and identical values.
+
+### Results 
+![alt text](images/testing_coverage.png)
+---
+
 ## Steps Performed
 
 ### 1. Import & Inspect Data
