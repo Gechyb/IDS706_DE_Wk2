@@ -19,16 +19,16 @@ import numpy as np
 from scipy.stats import zscore
 import operator
 
-# Encoding Categorical variables
-from sklearn.preprocessing import LabelEncoder
 
 # Visualization packages
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Machine learning model development packages
-from sklearn.model_selection import train_test_split
+# Encoding and Machine learning model packages
+from sklearn.preprocessing import LabelEncoder
 from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 
 
@@ -183,8 +183,7 @@ def filter_data(data: pd.DataFrame, conditions: dict) -> pd.DataFrame:
             if op_str in ops:
                 filtered = filtered[ops[op_str](filtered[col], value)]
             else:
-                print(
-                    f"Operator '{op_str}' not supported. Skipping filter on '{col}'.")
+                print(f"Operator '{op_str}' not supported. Skipping filter on '{col}'.")
         else:
             print(f"Column '{col}' not found in DataFrame. Skipping filter.")
 
@@ -262,31 +261,38 @@ def apply_one_hot_encoding(
         pd.DataFrame: Dataset with one-hot encoded columns
     """
     data = data.copy()
-    data = pd.get_dummies(data, columns=categorical_cols,
-                          drop_first=drop_first)
+    data = pd.get_dummies(data, columns=categorical_cols, drop_first=drop_first)
 
     return data
 
 
-def run_linear_regression(
+def run_model(
     data: pd.DataFrame,
     target_col: str = "num",
     categorical_cols: list = None,
     encoding: str = "onehot",
+    model_type: str = "linear",  # "linear" or "random_forest"
+    n_estimators: int = 100,
+    max_depth: int = None,
+    random_state: int = 42,
 ):
     """
-    Train and evaluate a simple Linear Regression model.
+    Train and evaluate either Linear Regression or Random Forest Regression.
 
     Parameters:
         data (pd.DataFrame): Dataset including features + target
         target_col (str): Column to predict (numeric)
         categorical_cols (list): List of categorical columns to encode
         encoding (str): "label" or "onehot" encoding
+        model_type (str): "linear" or "random_forest"
+        n_estimators (int): Number of trees (for random forest only)
+        max_depth (int): Max tree depth (for random forest only)
+        random_state (int): Random seed for reproducibility
 
     Returns:
-        model: Trained Linear Regression model
+        model: Trained model
     """
-    print(f"Running Linear Regression to predict '{target_col}'...")
+    print(f"Running {model_type.title()} Regression to predict '{target_col}'...")
 
     # Handle categorical variables
     if categorical_cols:
@@ -305,11 +311,20 @@ def run_linear_regression(
 
     # Train-test split
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
+        X, y, test_size=0.2, random_state=random_state
     )
 
+    # Choose model
+    if model_type == "linear":
+        model = LinearRegression()
+    elif model_type == "random_forest":
+        model = RandomForestRegressor(
+            n_estimators=n_estimators, max_depth=max_depth, random_state=random_state
+        )
+    else:
+        raise ValueError("model_type must be 'linear' or 'random_forest'")
+
     # Train model
-    model = LinearRegression()
     model.fit(X_train, y_train)
 
     # Predictions
@@ -365,78 +380,3 @@ def plot_data(
         raise ValueError("Invalid plot_type or missing y for box/scatter plot")
 
     plt.show()
-
-
-# if __name__ == "__main__":
-#     # Import the Dataset
-#     file_path = "data/heart_disease_UCI_dataset.csv"
-#     heart_disease = load_dataset(file_path)
-
-#     if heart_disease.empty:
-#         print("Dataset is empty. Exiting script...")
-#     else:
-#         # Inspect the Data
-
-#         heart_disease = clean_dataset(heart_disease)
-#         heart_disease = remove_outliers(heart_disease)
-
-#         filters = {"age": (">", 50), "chol": (">=", 240)}
-#         filtered_data = filter_data(heart_disease, filters)
-
-#         # Basic Filtering and Grouping
-#         # Average cholesterol by sex
-#         group_and_summarize(
-#             heart_disease, group_cols=["sex"], agg_dict={"chol": ["mean"]}
-#         )
-
-#         # Count of patients by chest pain type
-#         group_and_summarize(
-#             heart_disease, group_cols=["cp"], agg_dict={"num": ["count"]}
-#         )
-
-#         # Multiple aggregations
-#         group_and_summarize(
-#             heart_disease,
-#             group_cols=["sex", "cp"],
-#             agg_dict={"age": ["mean", "max"], "chol": ["mean", "max"]},
-#         )
-
-#         categorical_cols = ["sex", "cp", "fbs", "restecg", "exang"]
-#         # Label Encoding
-#         label_encoded_data = apply_label_encoding(
-#             heart_disease, categorical_cols)
-#         print("Label encoding:\n", label_encoded_data.head())
-
-#         # One-Hot Encoding
-#         one_hot_encoded_data = apply_one_hot_encoding(
-#             heart_disease, categorical_cols)
-#         print("One hot encoded data:\n", one_hot_encoded_data.head())
-
-#         # Exploring a Machine Learning Algorithm
-#         # Run with One-Hot Encoding (recommended for categorical data)
-#         model = run_linear_regression(
-#             heart_disease,
-#             target_col="num",
-#             categorical_cols=categorical_cols,
-#             encoding="onehot",
-#         )
-
-#         # Or run with Label Encoding
-#         model = run_linear_regression(
-#             heart_disease,
-#             target_col="num",
-#             categorical_cols=categorical_cols,
-#             encoding="label",
-#         )
-
-#         # Data Visualization
-#         # Histogram of age
-#         plot_data(heart_disease, x="age", plot_type="hist", palette="y")
-
-#         # Boxplot of cholesterol by heart disease
-#         plot_data(heart_disease, x="num", y="chol", plot_type="box")
-
-#         # Scatter plot of age vs cholesterol
-#         plot_data(
-#             heart_disease, x="age", y="chol", plot_type="scatter", palette="coolwarm"
-#         )
