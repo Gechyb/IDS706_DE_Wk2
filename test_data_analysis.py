@@ -20,12 +20,13 @@ from data_analysis import (
     group_and_summarize,
     apply_label_encoding,
     apply_one_hot_encoding,
-    run_linear_regression,
-    plot_data
+    run_model,
+    plot_data,
 )
 import unittest
 import pandas as pd
 import warnings
+
 warnings.filterwarnings("ignore")
 
 
@@ -34,13 +35,15 @@ class TestDataAnalysis(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Set up a sample dataset to use across tests"""
-        cls.sample_data = pd.DataFrame({
-            "age": [45, 60, 30, 50],
-            "chol": [200, 250, 180, 300],
-            "sex": ["M", "F", "M", "F"],
-            "cp": ["typical", "asymptomatic", "non-anginal", "typical"],
-            "num": [0, 1, 0, 1]
-        })
+        cls.sample_data = pd.DataFrame(
+            {
+                "age": [45, 60, 30, 50],
+                "chol": [200, 250, 180, 300],
+                "sex": ["M", "F", "M", "F"],
+                "cp": ["typical", "asymptomatic", "non-anginal", "typical"],
+                "num": [0, 1, 0, 1],
+            }
+        )
 
     def test_load_dataset_success(self):
         """Test loading an existing CSV file"""
@@ -73,7 +76,8 @@ class TestDataAnalysis(unittest.TestCase):
         """Test groupby and aggregation"""
         data = self.sample_data.copy()
         grouped = group_and_summarize(
-            data, group_cols=["sex"], agg_dict={"age": ["mean"]})
+            data, group_cols=["sex"], agg_dict={"age": ["mean"]}
+        )
         self.assertIn("age", grouped.columns.get_level_values(0))
 
     def test_apply_label_encoding(self):
@@ -87,15 +91,56 @@ class TestDataAnalysis(unittest.TestCase):
         """Test one-hot encoding works"""
         data = self.sample_data.copy()
         encoded = apply_one_hot_encoding(data, ["sex", "cp"])
-        self.assertTrue(all(col.startswith("sex_") or col.startswith(
-            "cp_") or col in ["age", "chol", "num"] for col in encoded.columns))
+        self.assertTrue(
+            all(
+                col.startswith("sex_")
+                or col.startswith("cp_")
+                or col in ["age", "chol", "num"]
+                for col in encoded.columns
+            )
+        )
 
-    def test_run_linear_regression(self):
-        """Test linear regression runs without error"""
-        data = self.sample_data.copy()
-        model = run_linear_regression(data, target_col="num", categorical_cols=[
-                                      "sex", "cp"], encoding="onehot")
+    def test_run_linear_model(self):
+        """Test run_model with linear regression"""
+        model = run_model(
+            self.sample_data,
+            target_col="num",
+            categorical_cols=["sex", "cp"],
+            encoding="onehot",
+            model_type="linear",
+        )
         self.assertIsNotNone(model)
+        # predictions
+        X = pd.get_dummies(self.sample_data.drop(columns=["num"]), drop_first=True)
+        y_pred = model.predict(X)
+        self.assertEqual(len(y_pred), len(self.sample_data))
+
+    def test_run_random_forest_model(self):
+        """Test run_model with random forest"""
+        model = run_model(
+            self.sample_data,
+            target_col="num",
+            categorical_cols=["sex", "cp"],
+            encoding="onehot",
+            model_type="random_forest",
+            n_estimators=10,
+            max_depth=3,
+        )
+        self.assertIsNotNone(model)
+        # predictions
+        X = pd.get_dummies(self.sample_data.drop(columns=["num"]), drop_first=True)
+        y_pred = model.predict(X)
+        self.assertEqual(len(y_pred), len(self.sample_data))
+
+    def test_invalid_model_type(self):
+        """Test invalid model_type raises ValueError"""
+        with self.assertRaises(ValueError):
+            run_model(
+                self.sample_data,
+                target_col="num",
+                categorical_cols=["sex", "cp"],
+                model_type="unsupported_model",
+            )
 
     def test_plot_data(self):
         """Smoke test for plotting function (checks it runs without error)"""
@@ -106,8 +151,7 @@ class TestDataAnalysis(unittest.TestCase):
             # Boxplot
             plot_data(data, x="num", y="chol", plot_type="box")
             # Scatter
-            plot_data(data, x="age", y="chol",
-                      plot_type="scatter", palette="icefire")
+            plot_data(data, x="age", y="chol", plot_type="scatter", palette="icefire")
         except Exception as e:
             self.fail(f"plot_data raised an exception: {e}")
 
@@ -119,19 +163,21 @@ class TestDataAnalysisSystem(unittest.TestCase):
         """
         Set up a small sample dataset to run system tests.
         """
-        cls.sample_data = pd.DataFrame({
-            "age": [45, 55, 60, 35],
-            "sex": ["M", "F", "M", "F"],
-            "cp": [1, 2, 3, 4],
-            "chol": [200, 250, 180, 300],
-            "fbs": [0, 1, 0, 1],
-            "restecg": [0, 1, 1, 0],
-            "exang": [0, 1, 0, 1],
-            "num": [0, 1, 1, 0],
-            "thalch": [150, 160, 170, 140],
-            "trestbps": [120, 140, 130, 125],
-            "oldpeak": [2.3, 3.1, 1.0, 0.5]
-        })
+        cls.sample_data = pd.DataFrame(
+            {
+                "age": [45, 55, 60, 35],
+                "sex": ["M", "F", "M", "F"],
+                "cp": [1, 2, 3, 4],
+                "chol": [200, 250, 180, 300],
+                "fbs": [0, 1, 0, 1],
+                "restecg": [0, 1, 1, 0],
+                "exang": [0, 1, 0, 1],
+                "num": [0, 1, 1, 0],
+                "thalch": [150, 160, 170, 140],
+                "trestbps": [120, 140, 130, 125],
+                "oldpeak": [2.3, 3.1, 1.0, 0.5],
+            }
+        )
 
     def test_full_pipeline(self):
         """
@@ -139,8 +185,9 @@ class TestDataAnalysisSystem(unittest.TestCase):
         """
         # Step 1: Clean dataset
         cleaned = clean_dataset(self.sample_data)
-        self.assertFalse(cleaned.isnull().any().any(),
-                         "Dataset should have no missing values")
+        self.assertFalse(
+            cleaned.isnull().any().any(), "Dataset should have no missing values"
+        )
 
         # Step 2: Remove outliers
         no_outliers = remove_outliers(cleaned, threshold=3)
@@ -152,28 +199,49 @@ class TestDataAnalysisSystem(unittest.TestCase):
 
         # Step 4: Group and summarize
         grouped = group_and_summarize(
-            filtered, group_cols=["sex"], agg_dict={"chol": ["mean"]})
+            filtered, group_cols=["sex"], agg_dict={"chol": ["mean"]}
+        )
         self.assertIn("chol", grouped.columns.get_level_values(0))
 
         # Step 5: Encode categorical data
-        label_encoded = apply_label_encoding(
-            filtered, ["sex", "cp", "fbs", "restecg", "exang"])
-        onehot_encoded = apply_one_hot_encoding(
-            filtered, ["sex", "cp", "fbs", "restecg", "exang"])
+        categorical_cols = ["sex", "cp", "fbs", "restecg", "exang"]
+
+        label_encoded = apply_label_encoding(filtered, categorical_cols)
+        onehot_encoded = apply_one_hot_encoding(filtered, categorical_cols)
         self.assertIsInstance(label_encoded, pd.DataFrame)
         self.assertIsInstance(onehot_encoded, pd.DataFrame)
 
-        # Step 6: Run ML model
-        model = run_linear_regression(label_encoded, target_col="num", categorical_cols=[
-                                      "sex", "cp", "fbs", "restecg", "exang"], encoding="label")
-        self.assertIsNotNone(model)
+        # Step 6: Run ML models (Linear Regression + Random Forest)
+        try:
+            linear_model = run_model(
+                filtered,
+                target_col="num",
+                categorical_cols=categorical_cols,
+                encoding="onehot",
+                model_type="linear",
+            )
+            self.assertIsNotNone(linear_model)
+
+            rf_model = run_model(
+                filtered,
+                target_col="num",
+                categorical_cols=categorical_cols,
+                encoding="onehot",
+                model_type="random_forest",
+                n_estimators=10,
+                max_depth=3,
+            )
+            self.assertIsNotNone(rf_model)
+        except Exception as e:
+            self.fail(f"ML model pipeline failed: {e}")
 
         # Step 7: Test plot function (basic smoke test)
         try:
             plot_data(filtered, x="age", plot_type="hist", palette="skyblue")
             plot_data(filtered, x="num", y="chol", plot_type="box")
-            plot_data(filtered, x="age", y="chol",
-                      plot_type="scatter", palette="coolwarm")
+            plot_data(
+                filtered, x="age", y="chol", plot_type="scatter", palette="coolwarm"
+            )
         except Exception as e:
             self.fail(f"Plotting failed: {e}")
 
@@ -196,13 +264,15 @@ class TestDataAnalysisSystem(unittest.TestCase):
         self.assertTrue(filtered.equals(missing_col_df))
 
         # Dataset with identical values
-        identical_df = pd.DataFrame({
-            "age": [50] * 4,
-            "sex": ["M"] * 4,
-            "cp": [1] * 4,
-            "chol": [200] * 4,
-            "num": [0] * 4
-        })
+        identical_df = pd.DataFrame(
+            {
+                "age": [50] * 4,
+                "sex": ["M"] * 4,
+                "cp": [1] * 4,
+                "chol": [200] * 4,
+                "num": [0] * 4,
+            }
+        )
         no_outliers = remove_outliers(identical_df, threshold=3)
         self.assertEqual(no_outliers.shape[0], 4)  # nothing removed
 
