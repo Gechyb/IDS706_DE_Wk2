@@ -19,6 +19,10 @@ run:
 test:
 	python -m pytest -vv --disable-warnings --cov=data_analysis test_data_analysis.py
 
+# Run python usage.py
+usage:
+	python usage.py
+
 # Clean up Python cache files
 clean:
 	rm -rf __pycache__ .pytest_cache .coverage
