@@ -48,6 +48,17 @@ make all
   Python script containing modular functions for loading, cleaning, analyzing, and modeling the dataset.  
   This script represents the finalized workflow after insights from the notebook exploration.
 
+   ```bash
+    make run
+    ```
+
+- **usage.py**
+
+  This file provides a simple example of how to run the data analysis pipeline en-to-end. It load the sample dataset, applies cleaning, outlier removal, and trains a model, while printing intermediate outputs. 
+   ```bash
+    make usage
+    ```
+
 - **Makefile**  
 
   The Makefile automates common tasks for this project, such as installing dependencies, running analysis scripts, and executing tests.  
@@ -55,6 +66,10 @@ make all
   - `make all`: Runs the full data analysis workflow, including data cleaning, modeling, and visualization.
   - `make run`: Executes the main analysis script (`data_analysis.py`).
   - `make test`: Runs unit tests to verify code correctness (e.g., `test_data_analysis.py`).  
+  - `make usage`: Runs the usage.py file.
+  - `make format`: Formats .py files using black formating.
+  - `make lint`: Uses flake8 for linting
+
   Using the Makefile ensures a consistent and reproducible workflow, making it easy to set up and run the project with simple commands.
 
 - **images**
@@ -150,7 +165,33 @@ make all
     - Helps ensure the pipeline works as expected and handles edge cases.
 
 ---
+## Code Refactoring
+The code was refactored from a Jupyter notebook into modular Python functions within `data_analysis.py`. This improved maintainability, readability, and reusability. Key steps included:
 
+- **Function Extraction:** Data loading, cleaning, outlier removal, encoding, modeling, and plotting were separated into distinct functions.
+- **Variable Names:** Updated variable names to be more intuitive and descriptive, making the code easier for users and developers to understand.
+- **Parameterization:** Functions accept arguments for file paths, columns, thresholds, and model parameters, allowing flexible usage.
+- **Error Handling:** Added checks for missing columns, empty datasets, and invalid inputs.
+- **Documentation:** Each function includes docstrings describing its purpose, inputs, and outputs.
+- **Testing:** Refactored code is covered by unit tests in `test_data_analysis.py` to ensure correctness and handle edge cases.
+- **Pipeline Structure:** The main script orchestrates the workflow by calling these functions in sequence, making the analysis reproducible and easy to extend.
+
+This refactoring enables automated analysis, easier debugging, and integration with CI/CD tools.
+
+*Example of variable name change using VS code rename method (Fn + F2)*
+![alt text](images/name_change.png)
+- filtered → filterd data
+- ops → operator
+- le → labelencoder
+
+
+*Example of extract code into separate function using VS code extract method feature*
+![alt text](images/extract_method.png)
+
+- checking_missing_values(): Extracted into a separate function to handle missing value checks independently.
+- drop_duplicates(): Extracted into its own function to isolate duplicate removal logic, making the cleaning process clearer and easier to maintain.
+
+---
 ## Testing 
 This script tests the data analysis functions to ensure the project is reproducible and results are verifiable. It validates the correctness of data cleaning, outlier removal, filtering, encoding, grouping, and plotting functions, as well as machine learning steps like linear regression.
 
@@ -186,7 +227,7 @@ python -m pytest -vv --cov=data_analysis test_data_analysis.py
 
 - Edge Cases: Handles empty datasets, single-row datasets, missing columns, and identical values.
 
-### Results 
+### Output from testing 
 ![alt text](images/testing_coverage.png)
 ---
 
@@ -272,7 +313,7 @@ The script will:
 - Remove outliers.
 - Filter and group data.
 - Encode categorical variables.
-- Run linear regression models.
+- Run linear regression models and random forest models.
 - Display visualizations.
 
 ---
@@ -281,7 +322,13 @@ The script will:
 
 - Older patients with higher cholesterol may have a higher likelihood of heart disease.
 - Categorical features like sex and chest pain type show differences in heart disease prevalence.
-- Linear Regression can predict numeric outcomes, but classification models would be more suitable for predicting heart disease (0/1).
+- Explanation of the machine model run
+
+  - Linear Regression: Achieved an R² score of 0.31, meaning it explains ~31% of the variance in the target variable.
+
+  - Random Forest Regression: Achieved an R² score of 0.27, explaining ~27% of the variance.
+
+  - Interpretation: Both models capture some relationship between the features and the target, but performance is limited (low R²). This suggests the dataset is complex or requires additional feature engineering for stronger predictive power.
 
 ---
 
