@@ -35,11 +35,11 @@ def main():
 
     # Step 4: Optional filtering
     filters = {"age": (">", 50), "chol": (">=", 240)}
-    hd_df_filtered = filter_data(hd_df, filters)
+    filter_data(hd_df, filters)
 
     # Step 5: Grouping and summarizing
-    group_and_summarize(hd_df_filtered, group_cols=["sex"], agg_dict={"chol": ["mean"]})
-    group_and_summarize(hd_df_filtered, group_cols=["cp"], agg_dict={"num": ["count"]})
+    group_and_summarize(hd_df, group_cols=["sex"], agg_dict={"chol": ["mean"]})
+    group_and_summarize(hd_df, group_cols=["cp"], agg_dict={"num": ["count"]})
     group_and_summarize(
         hd_df,
         group_cols=["sex", "cp"],
@@ -48,15 +48,15 @@ def main():
 
     # Step 6: Encode categorical variables
     categorical_cols = ["sex", "cp", "fbs", "restecg", "exang"]
-    label_encoded_data = apply_label_encoding(hd_df_filtered, categorical_cols)
+    label_encoded_data = apply_label_encoding(hd_df, categorical_cols)
     print("Label encoded data:\n", label_encoded_data.head())
-    one_hot_encoded_data = apply_one_hot_encoding(hd_df_filtered, categorical_cols)
+    one_hot_encoded_data = apply_one_hot_encoding(hd_df, categorical_cols)
     print("One-hot encoded data:\n", one_hot_encoded_data.head())
 
     # Step 7: Train models
     print("\n--- Running Linear Regression ---")
     run_model(
-        hd_df_filtered,
+        hd_df,
         target_col="num",
         categorical_cols=categorical_cols,
         encoding="onehot",
@@ -65,7 +65,7 @@ def main():
 
     print("\n--- Running Random Forest Regression ---")
     run_model(
-        hd_df_filtered,
+        hd_df,
         target_col="num",
         categorical_cols=categorical_cols,
         encoding="onehot",
@@ -75,11 +75,9 @@ def main():
     )
 
     # Step 8: Data Visualization
-    plot_data(hd_df_filtered, x="age", plot_type="hist", palette="y")
-    plot_data(hd_df_filtered, x="num", y="chol", plot_type="box")
-    plot_data(
-        hd_df_filtered, x="age", y="chol", plot_type="scatter", palette="coolwarm"
-    )
+    plot_data(hd_df, x="age", plot_type="hist", palette="y")
+    plot_data(hd_df, x="num", y="chol", plot_type="box")
+    plot_data(hd_df, x="age", y="chol", plot_type="scatter", palette="coolwarm")
 
 
 if __name__ == "__main__":

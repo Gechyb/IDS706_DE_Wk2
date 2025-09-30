@@ -51,10 +51,8 @@ def load_dataset(file_path: str) -> pd.DataFrame:
 
         print("Dataset loaded successfully!")
         print("First 5 rows:\n", data.head())
-        print(
-            f"Number of rows: {data.shape[0]}, Number of columns: {data.shape[1]}"
-        )  # Show number of rows and columns
-        print("Data type for each column:\n", data.dtypes)  # Show data types
+        print(f"Number of rows: {data.shape[0]}, Number of columns: {data.shape[1]}")
+        print("Data type for each column:\n", data.dtypes)
 
         return data
     except FileNotFoundError:
@@ -103,12 +101,8 @@ def clean_dataset(data: pd.DataFrame) -> pd.DataFrame:
     else:
         print(f"Removed {before - after} duplicate rows.")
 
-    # Show data types
     print("Data types:\n", data.dtypes)
-
-    # Summary statistics
     print("Summary statistics:\n", data.describe())
-
     return data
 
 
@@ -168,7 +162,7 @@ def filter_data(data: pd.DataFrame, conditions: dict) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Filtered DataFrame
     """
-    ops = {
+    operators = {
         ">": operator.gt,
         "<": operator.lt,
         ">=": operator.ge,
@@ -177,20 +171,24 @@ def filter_data(data: pd.DataFrame, conditions: dict) -> pd.DataFrame:
         "!=": operator.ne,
     }
 
-    filtered = data.copy()  # to avoid modifying original dataset
-    for col, (op_str, value) in conditions.items():
-        if col in filtered.columns:
-            if op_str in ops:
-                filtered = filtered[ops[op_str](filtered[col], value)]
+    filtered_data = data.copy()  # to avoid modifying original dataset
+    for col, (operator_str, value) in conditions.items():
+        if col in filtered_data.columns:
+            if operator_str in operators:
+                filtered_data = filtered_data[
+                    operators[operator_str](filtered_data[col], value)
+                ]
             else:
-                print(f"Operator '{op_str}' not supported. Skipping filter on '{col}'.")
+                print(
+                    f"Operator '{operator_str}' not supported. Skipping filter on '{col}'."
+                )
         else:
             print(f"Column '{col}' not found in DataFrame. Skipping filter.")
 
     print(f"Filtered data based on conditions: {conditions}")
-    print(filtered.head())
-    print(filtered.shape)
-    return filtered
+    print(filtered_data.head())
+    print(filtered_data.shape)
+    return filtered_data
 
 
 def group_and_summarize(data: pd.DataFrame, group_cols: list, agg_dict: dict):
@@ -235,11 +233,11 @@ def apply_label_encoding(data: pd.DataFrame, categorical_cols: list) -> pd.DataF
         pd.DataFrame: Dataset with encoded categorical columns
     """
     data = data.copy()
-    le = LabelEncoder()
+    labelencoder = LabelEncoder()
 
     for col in categorical_cols:
         if col in data.columns:
-            data[col] = le.fit_transform(
+            data[col] = labelencoder.fit_transform(
                 data[col].astype(str)
             )  # convert to string to be safe
 
