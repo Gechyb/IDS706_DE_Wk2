@@ -83,16 +83,13 @@ def clean_dataset(data: pd.DataFrame) -> pd.DataFrame:
     print("Data Cleaning & Preprocessing...")
 
     # Check missing values
-    missing_values = data.isnull().sum()
-    total_missing = missing_values.sum()
-    if total_missing > 0:
-        print(
-            "Missing values detected per column: \n", missing_values[missing_values > 0]
-        )
-    else:
-        print("No missing values found")
+    check_missing_values(data)
 
     # Drop duplicates
+    return drop_duplicates(data)
+
+
+def drop_duplicates(data):
     before = data.shape[0]
     data = data.drop_duplicates()
     after = data.shape[0]
@@ -104,6 +101,17 @@ def clean_dataset(data: pd.DataFrame) -> pd.DataFrame:
     print("Data types:\n", data.dtypes)
     print("Summary statistics:\n", data.describe())
     return data
+
+
+def check_missing_values(data):
+    missing_values = data.isnull().sum()
+    total_missing = missing_values.sum()
+    if total_missing > 0:
+        print(
+            "Missing values detected per column: \n", missing_values[missing_values > 0]
+        )
+    else:
+        print("No missing values found")
 
 
 def remove_outliers(
@@ -122,6 +130,8 @@ def remove_outliers(
         pd.DataFrame: Dataset with outliers removed
     """
     print("Outlier Detection & Removal...")
+
+    data = clean_dataset(data)
 
     # Determine which numeric columns to use
     if columns is None:
