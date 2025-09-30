@@ -20,43 +20,43 @@ from data_analysis import (
 def main():
     # Step 1: Load the dataset
     file_path = "data/heart_disease_UCI_dataset.csv"
-    heart_disease = load_dataset(file_path)
+    hd_df = load_dataset(file_path)
 
-    if heart_disease.empty:
+    if hd_df.empty:
         print("Dataset is empty. Exiting script...")
         return
 
     # Step 2: Clean the dataset
-    heart_disease = clean_dataset(heart_disease)
+    hd_df = clean_dataset(hd_df)
 
     # Step 3: Remove outliers
     numeric_columns = ["age", "trestbps", "chol", "thalch", "oldpeak"]
-    heart_disease = remove_outliers(heart_disease, columns=numeric_columns)
+    hd_df = remove_outliers(hd_df, columns=numeric_columns)
 
     # Step 4: Optional filtering
     filters = {"age": (">", 50), "chol": (">=", 240)}
-    filtered_data = filter_data(heart_disease, filters)
+    hd_df_filtered = filter_data(hd_df, filters)
 
     # Step 5: Grouping and summarizing
-    group_and_summarize(heart_disease, group_cols=["sex"], agg_dict={"chol": ["mean"]})
-    group_and_summarize(heart_disease, group_cols=["cp"], agg_dict={"num": ["count"]})
+    group_and_summarize(hd_df_filtered, group_cols=["sex"], agg_dict={"chol": ["mean"]})
+    group_and_summarize(hd_df_filtered, group_cols=["cp"], agg_dict={"num": ["count"]})
     group_and_summarize(
-        heart_disease,
+        hd_df,
         group_cols=["sex", "cp"],
         agg_dict={"age": ["mean", "max"], "chol": ["mean", "max"]},
     )
 
     # Step 6: Encode categorical variables
     categorical_cols = ["sex", "cp", "fbs", "restecg", "exang"]
-    label_encoded_data = apply_label_encoding(heart_disease, categorical_cols)
+    label_encoded_data = apply_label_encoding(hd_df_filtered, categorical_cols)
     print("Label encoded data:\n", label_encoded_data.head())
-    one_hot_encoded_data = apply_one_hot_encoding(heart_disease, categorical_cols)
+    one_hot_encoded_data = apply_one_hot_encoding(hd_df_filtered, categorical_cols)
     print("One-hot encoded data:\n", one_hot_encoded_data.head())
 
     # Step 7: Train models
     print("\n--- Running Linear Regression ---")
-    linear_model = run_model(
-        heart_disease,
+    run_model(
+        hd_df_filtered,
         target_col="num",
         categorical_cols=categorical_cols,
         encoding="onehot",
@@ -64,8 +64,8 @@ def main():
     )
 
     print("\n--- Running Random Forest Regression ---")
-    rf_model = run_model(
-        heart_disease,
+    run_model(
+        hd_df_filtered,
         target_col="num",
         categorical_cols=categorical_cols,
         encoding="onehot",
@@ -75,9 +75,11 @@ def main():
     )
 
     # Step 8: Data Visualization
-    plot_data(heart_disease, x="age", plot_type="hist", palette="y")
-    plot_data(heart_disease, x="num", y="chol", plot_type="box")
-    plot_data(heart_disease, x="age", y="chol", plot_type="scatter", palette="coolwarm")
+    plot_data(hd_df_filtered, x="age", plot_type="hist", palette="y")
+    plot_data(hd_df_filtered, x="num", y="chol", plot_type="box")
+    plot_data(
+        hd_df_filtered, x="age", y="chol", plot_type="scatter", palette="coolwarm"
+    )
 
 
 if __name__ == "__main__":
