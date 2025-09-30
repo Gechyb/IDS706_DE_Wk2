@@ -170,6 +170,7 @@ The code was refactored from a Jupyter notebook into modular Python functions wi
 
 - **Function Extraction:** Data loading, cleaning, outlier removal, encoding, modeling, and plotting were separated into distinct functions.
 - **Variable Names:** Updated variable names to be more intuitive and descriptive, making the code easier for users and developers to understand.
+- **Machine Learning Model Comparison:** Evaluated both linear regression and random forest models to determine which better predicts heart disease presence, analyzing their R² scores and overall performance.
 - **Parameterization:** Functions accept arguments for file paths, columns, thresholds, and model parameters, allowing flexible usage.
 - **Error Handling:** Added checks for missing columns, empty datasets, and invalid inputs.
 - **Documentation:** Each function includes docstrings describing its purpose, inputs, and outputs.
