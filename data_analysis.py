@@ -131,8 +131,6 @@ def remove_outliers(
     """
     print("Outlier Detection & Removal...")
 
-    data = clean_dataset(data)
-
     # Determine which numeric columns to use
     if columns is None:
         numeric_cols = data.select_dtypes(include=[np.number])
