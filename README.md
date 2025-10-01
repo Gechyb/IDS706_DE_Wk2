@@ -36,13 +36,6 @@ make all
 ```
 
 ## Project Structure
-
-- **data_analysis.ipynb**  
-
-  Jupyter Notebook used for **initial data exploration and visualization**.  
-  This includes checking for missing values, duplicates, summary statistics, and plotting feature distributions.  
-  The purpose of this notebook was to explore the dataset interactively before refactoring the steps into reusable functions in `data_analysis.py`.
-
 - **data_analysis.py**  
 
   Python script containing modular functions for loading, cleaning, analyzing, and modeling the dataset.  
