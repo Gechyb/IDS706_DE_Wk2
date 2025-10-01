@@ -20,8 +20,6 @@ jobs:
         pip install -r requirements.txt flake8 pytest pytest-cov
     - name: Lint code
       run: make lint
-    - name: Format code
-      run: make format
     - name: Run tests
       run: make test
     - name: Generate HTML coverage report
